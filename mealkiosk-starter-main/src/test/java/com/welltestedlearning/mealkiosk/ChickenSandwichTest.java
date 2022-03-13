@@ -29,4 +29,12 @@ public class ChickenSandwichTest {
         assertThat(chickenSandwich.isSpicy())
                 .isFalse();
     }
+
+    @Test
+    public void sandwichWithToppings() {
+        ChickenSandwich chickenSandwich = new ChickenSandwich();
+        chickenSandwich.addTopping(BurgerTopping.CHEESE, 1);
+        assertThat(chickenSandwich.price())
+                .isEqualTo(7);
+    }
 }
