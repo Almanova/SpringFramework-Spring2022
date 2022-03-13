@@ -13,4 +13,20 @@ public class ChickenSandwichTest {
         assertThat(chickenSandwich.price())
                 .isEqualTo(6);
     }
+
+    @Test
+    public void spicySandwich() {
+        ChickenSandwich chickenSandwich = new ChickenSandwich();
+
+        assertThat(chickenSandwich.isSpicy())
+                .isTrue();
+    }
+
+    @Test
+    public void notSpicySandwich() {
+        ChickenSandwich chickenSandwich = new ChickenSandwich(false);
+
+        assertThat(chickenSandwich.isSpicy())
+                .isFalse();
+    }
 }
