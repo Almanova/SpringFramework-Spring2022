@@ -38,6 +38,15 @@ public class MealOrder {
         items.add(new Burger(burgerOption, 1));
     }
 
+    public void addSandwich() {
+        items.add(new ChickenSandwich());
+    }
+
+    public MealOrder(DrinkOption drink) {
+        addSandwich();
+        addDrink(drink.name().toLowerCase());
+    }
+
     public MealOrder(BurgerTopping burger,
                      DrinkOption drink) {
         addBurger(burger);
