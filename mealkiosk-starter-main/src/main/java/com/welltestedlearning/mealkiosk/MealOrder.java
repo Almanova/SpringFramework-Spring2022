@@ -26,6 +26,10 @@ public class MealOrder {
         addBurger(burgerOption);
     }
 
+    public void addItem(MenuItem menuItem) {
+        items.add(menuItem);
+    }
+
     public void addDrink(String drinkSize) {
         items.add(new Drink(drinkSize));
     }
