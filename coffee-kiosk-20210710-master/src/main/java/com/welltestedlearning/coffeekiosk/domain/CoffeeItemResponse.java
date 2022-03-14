@@ -1,4 +1,4 @@
-package com.welltestedlearning.coffeekiosk;
+package com.welltestedlearning.coffeekiosk.domain;
 
 public class CoffeeItemResponse {
     private long id;
