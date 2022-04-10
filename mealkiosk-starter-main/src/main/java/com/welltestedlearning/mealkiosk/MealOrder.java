@@ -72,5 +72,12 @@ public class MealOrder {
         }
         System.out.println(price());
     }
+
+    @Override
+    public String toString() {
+        return "MealOrder{" +
+                "items=" + items +
+                '}';
+    }
 }
 
