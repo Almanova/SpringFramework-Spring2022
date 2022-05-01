@@ -1,9 +1,7 @@
 package com.welltestedlearning.coffeekiosk.adapter.in.api;
 
-import com.welltestedlearning.coffeekiosk.domain.CoffeeItem;
-import com.welltestedlearning.coffeekiosk.domain.CoffeeItemResponse;
-import com.welltestedlearning.coffeekiosk.domain.CoffeeOrder;
-import com.welltestedlearning.coffeekiosk.domain.CoffeeOrderRepository;
+import com.welltestedlearning.coffeekiosk.adapter.out.currency.StubCurrencyConversionService;
+import com.welltestedlearning.coffeekiosk.domain.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,22 +15,36 @@ import java.util.Optional;
 @RestController
 public class CoffeeOrderController {
     private final CoffeeOrderRepository coffeeOrderRepository;
+    private final CurrencyConversionService currencyConversionService;
 
     @Value("${order.price.currency.prefix}")
     private String currencyPrefix;
 
-    public CoffeeOrderController(CoffeeOrderRepository coffeeOrderRepository) {
+    public CoffeeOrderController(CoffeeOrderRepository coffeeOrderRepository,
+                                 CurrencyConversionService currencyConversionService) {
         this.coffeeOrderRepository = coffeeOrderRepository;
+        this.currencyConversionService = currencyConversionService;
     }
 
     @GetMapping("/api/coffee/orders/{id}")
-    public ResponseEntity<CoffeeOrderResponse> coffeeOrder(@PathVariable("id") long orderId) {
+    public ResponseEntity<CoffeeOrderResponse> coffeeOrder(@PathVariable("id") long orderId,
+                                                           @RequestParam(value = "currency", defaultValue = "usd") String currency) {
         if (orderId < 0)
             throw new IllegalArgumentException();
         Optional<CoffeeOrder> coffeeOrderOptional = coffeeOrderRepository.findById(orderId);
-        return coffeeOrderOptional.map(coffeeOrder -> ResponseEntity
-                .ok(CoffeeOrderResponse.from(coffeeOrder, currencyPrefix)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        CoffeeOrder coffeeOrder = null;
+        if (coffeeOrderOptional.isPresent())
+            coffeeOrder = coffeeOrderOptional.get();
+        else
+            return ResponseEntity.notFound().build();
+
+        CoffeeOrderResponse coffeeOrderResponse = CoffeeOrderResponse.from(coffeeOrder, currencyPrefix);
+        if (currency.equals("gbp"))
+            coffeeOrderResponse.setTotalPrice(Integer.toString(currencyConversionService.convertToBritishPound(
+                    coffeeOrder.totalPrice())));
+
+        return ResponseEntity
+                .ok(coffeeOrderResponse);
     }
 
     @PostMapping("api/coffee/orders")
