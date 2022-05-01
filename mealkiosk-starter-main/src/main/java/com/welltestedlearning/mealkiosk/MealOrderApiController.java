@@ -11,6 +11,8 @@ public class MealOrderApiController {
         String mealOrderText = mealOrderRequest.getBurger();
         MealBuilder mealBuilder = new MealBuilder();
         mealBuilder.addBurgerString(mealOrderText);
+        if (mealOrderRequest.getDrinkSize() != null)
+            mealBuilder.withDrink(mealOrderRequest.getDrinkSize());
         MealOrder order = mealBuilder.build();
         int price = order.price();
 

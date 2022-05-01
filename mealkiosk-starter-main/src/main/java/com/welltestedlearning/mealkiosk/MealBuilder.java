@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 public class MealBuilder {
     private MealOrder order = new MealOrder();
+    private String drinkSize;
+    private Burger burger = new Burger();
 
     public void addBurgerString(String burgerOrderText) {
         String[] items = burgerOrderText.split(",");
@@ -11,16 +13,23 @@ public class MealBuilder {
         Arrays.stream(items).forEach(item -> {
             switch (item) {
                 case "cheese":
-                    order.addBurger(BurgerTopping.CHEESE);
+                    this.burger = new Burger(BurgerTopping.CHEESE, 1);
                 case "avocado":
-                    order.addBurger(BurgerTopping.AVOCADO);
+                    this.burger = new Burger(BurgerTopping.AVOCADO, 1);
                 case "bacon":
-                    order.addBurger(BurgerTopping.BACON);
+                    this.burger = new Burger(BurgerTopping.BACON, 1);
             }
         });
     }
 
+    public void withDrink(String size) {
+        this.drinkSize = size;
+    }
+
     public MealOrder build() {
-        return order;
+        MealOrder mealOrder = new MealOrder();
+        mealOrder.addItem(burger);
+        mealOrder.addDrink(drinkSize);
+        return mealOrder;
     }
 }
